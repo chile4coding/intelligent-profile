@@ -95,17 +95,7 @@ jobs:
           timeout: 600s
           script: |
             cd ${{ secrets.SERVER_PATH }}
-            
-            # Extract db name from DATABASE_URL
-            DB_NAME=$(echo "${{ secrets.DATABASE_URL }}" | sed -n 's/.*\/\([^?]*\).*/\1/p')
-            DB_USER=$(echo "${{ secrets.DATABASE_URL }}" | sed -n 's/:.*@/\//' | cut -d'/' -f2 | cut -d':' -f1)
-            DB_PASS=$(echo "${{ secrets.DATABASE_URL }}" | sed -n 's/.*:\([^@]*\)@.*/\1/p')
-            
-            # Create database if it doesn't exist (connect to postgres admin db)
-            PGPASSWORD="$DB_PASS" psql -U "$DB_USER" -h localhost -d postgres -tc "SELECT 1 FROM pg_database WHERE datname = '$DB_NAME'" | grep -q 1 || \
-            PGPASSWORD="$DB_PASS" psql -U "$DB_USER" -h localhost -d postgres -c "CREATE DATABASE $DB_NAME"
-            
-            npm install --omit=dev
+            npm install --only=production
             npx prisma generate
             npx prisma db push
 
