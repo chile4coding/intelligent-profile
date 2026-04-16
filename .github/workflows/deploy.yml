@@ -40,12 +40,12 @@ jobs:
       - name: Generate Prisma Client
         run: npx prisma generate
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/marketplace
+          DATABASE_URL: "postgresql://postgresql:5557@localhost:5432/profile_intelligence?schema=public"
 
       - name: Run database migrations
         run: npx prisma migrate deploy
         env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/marketplace
+          DATABASE_URL: "postgresql://postgresql:5557@localhost:5432/profile_intelligence?schema=public"
 
       - name: Build TypeScript
         run: npm run build
@@ -97,7 +97,7 @@ jobs:
             cd ${{ secrets.SERVER_PATH }}
             npm install --only=production
             npx prisma generate
-            npx prisma migrate deploy
+            npx prisma db push
 
       - name: Restart app on server
         uses: appleboy/ssh-action@v1.0.3
