@@ -97,7 +97,7 @@ jobs:
             cd ${{ secrets.SERVER_PATH }}
             npm install --only=production
             npx prisma generate
-            npx prisma db push
+            npx prisma db push --accept-data-loss
 
       - name: Restart app on server
         uses: appleboy/ssh-action@v1.0.3
