@@ -8,19 +8,23 @@ datasource db {
 }
 
 model Profile {
-  id                 String   @id
-  name               String   @unique
-  gender             String?
+  id                 String   @id @default(uuid(7))
+  name               String   @unique @db.VarChar(255)
+  gender             String?  @db.VarChar(10)
   genderProbability  Float?   @map("gender_probability")
-  sampleSize         Int?     @map("sample_size")
   age                Int?
-  ageGroup           String?  @map("age_group")
-  countryId          String?  @map("country_id")
+  ageGroup           String?  @map("age_group") @db.VarChar(20)
+  countryId          String?  @map("country_id") @db.VarChar(2)
+  countryName        String?  @map("country_name") @db.VarChar(100)
   countryProbability Float?   @map("country_probability")
-  createdAt          String   @map("created_at")
+  createdAt          DateTime @map("created_at") @default(now())
 
   @@index([gender])
   @@index([countryId])
   @@index([ageGroup])
+  @@index([age])
+  @@index([genderProbability])
+  @@index([countryProbability])
+  @@index([createdAt])
   @@map("profiles")
 }
