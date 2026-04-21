@@ -6,7 +6,7 @@ interface ParsedQuery {
   max_age?: number;
 }
 
-const COUNTRY_NAME_TO_ISO: Record<string, string> = {
+export const COUNTRY_NAME_TO_ISO: Record<string, string> = {
   nigeria: "NG",
   kenya: "KE",
   ghana: "GH",

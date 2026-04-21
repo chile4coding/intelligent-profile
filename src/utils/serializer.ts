@@ -21,7 +21,7 @@ interface SnakecaseProfile {
   country_id: string | null;
   country_name: string | null;
   gender_probability: number | null;
-  sample_size: number | null;
+  sample_size?: number | null;
   country_probability: number | null;
   created_at: string;
 }
@@ -42,8 +42,10 @@ export function toSnake(profile: ProfileFields): SnakecaseProfile {
     country_id: profile.countryId,
     country_name: profile.countryName ?? null,
     gender_probability: profile.genderProbability ?? null,
-    sample_size: profile.sampleSize ?? null,
-    country_probability: profile.countryProbability ? Number(profile.countryProbability.toFixed(2)) : null,
+    // sample_size: profile.sampleSize ?? null,
+    country_probability: profile.countryProbability
+      ? Number(profile.countryProbability.toFixed(2))
+      : null,
     created_at: createdAt,
   };
 }
@@ -57,7 +59,9 @@ export function toSnakeList(profile: ProfileFields): Partial<SnakecaseProfile> {
     age_group: profile.ageGroup,
     country_id: profile.countryId,
     country_name: profile.countryName ?? null,
-    country_probability: profile.countryProbability ? Number(profile.countryProbability.toFixed(2)) : null,
+    country_probability: profile.countryProbability
+      ? Number(profile.countryProbability.toFixed(2))
+      : null,
     gender_probability: profile.genderProbability ?? null,
     created_at: profile?.createdAt
       ? profile.createdAt instanceof Date

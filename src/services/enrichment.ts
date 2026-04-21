@@ -1,3 +1,5 @@
+import { COUNTRY_NAME_TO_ISO } from "./queryParser";
+
 interface GenderizeResponse {
   name: string;
   gender: string | null;
@@ -19,23 +21,28 @@ interface NationalizeResponse {
 interface EnrichedData {
   gender: string | null;
   genderProbability: number | null;
-  sampleSize: number | null;
+  sampleSize?: number | null;
   age: number | null;
   ageGroup: string | null;
   countryId: string | null;
   countryProbability: number | null;
+  countryName?: string | null;
 }
+
+const ISO_TO_COUNTRY_NAME: Record<string, string> = Object.fromEntries(
+  Object.entries(COUNTRY_NAME_TO_ISO).map(([name, iso]) => [iso, name]),
+);
 
 export async function enrichProfile(name: string): Promise<EnrichedData> {
   const [genderData, ageData, nationData] = await Promise.all([
     fetch(`https://api.genderize.io?name=${name}`).then(
-      (r) => r.json() as Promise<GenderizeResponse>
+      (r) => r.json() as Promise<GenderizeResponse>,
     ),
     fetch(`https://api.agify.io?name=${name}`).then(
-      (r) => r.json() as Promise<AgifyResponse>
+      (r) => r.json() as Promise<AgifyResponse>,
     ),
     fetch(`https://api.nationalize.io?name=${name}`).then(
-      (r) => r.json() as Promise<NationalizeResponse>
+      (r) => r.json() as Promise<NationalizeResponse>,
     ),
   ]);
 
@@ -52,17 +59,17 @@ export async function enrichProfile(name: string): Promise<EnrichedData> {
   }
 
   const sortedCountries = [...nationData.country].sort(
-    (a, b) => b.probability - a.probability
+    (a, b) => b.probability - a.probability,
   );
   const topCountry = sortedCountries[0];
 
   return {
     gender: genderData.gender,
     genderProbability: genderData.probability,
-    sampleSize: genderData.count,
     age: ageData.age,
     ageGroup: null,
     countryId: topCountry.country_id,
     countryProbability: topCountry.probability,
+    countryName: ISO_TO_COUNTRY_NAME[topCountry.country_id] ?? null,
   };
 }

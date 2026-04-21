@@ -239,7 +239,7 @@ export async function createProfile(req: Request, res: Response) {
           ageGroup: enriched.ageGroup,
           countryId: enriched.countryId,
           countryProbability: enriched.countryProbability,
-          createdAt: new Date().toUTCString(),
+          countryName: enriched.countryName,
         },
       });
 
@@ -381,8 +381,6 @@ export async function searchProfiles(req: Request, res: Response) {
     }
 
     const parsed = parseNaturalLanguageQuery(q);
-
-    console.log("this is the query: ", parsed);
 
     if (!parsed) {
       return res
